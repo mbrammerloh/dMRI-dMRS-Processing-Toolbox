@@ -257,7 +257,7 @@ def read_numeric_txt(input_path):
 
 def remove_folder(folder_path):
 
-    call = [f'rm -r {folder_path}']
+    call = [f'rm -rf {folder_path}']
     os.system(' '.join(call))
 
 def update_cfg(cfg):
@@ -267,6 +267,7 @@ def update_cfg(cfg):
         'redo_bet_anat',
         'redo_b0_extract',
         'redo_merge_dwi',
+        'redo_firstmask',
         'redo_denoise',
         'redo_gibbs',
         'redo_topup',
@@ -601,6 +602,7 @@ def do_eddy(eddy_input_files, cfg):  # rita addes repol and slm linear
             f'--bvals={bvals}', \
             f'--out={output}', \
             f'--repol', \
+            #f'--ol_nstd=2',\
             f'--data_is_shelled --verbose']
         
     # If data are not acquired over the full sphere, use linear SLM
@@ -3478,32 +3480,32 @@ def antsreg_full(fixed_path, moving_path, out_transform, cfg, lesion_mask_moving
 #     print(' '.join(call))
 #     os.system(' '.join(call))
 
-def antsreg_simple2(fixed_path, moving_path, out_transform, cfg, lesion_mask_moving=None):
+# def antsreg_simple2(fixed_path, moving_path, out_transform, cfg, lesion_mask_moving=None):
 
-    out_im = out_transform + '.nii.gz'
+#     out_im = out_transform + '.nii.gz'
     
-    exe = os.path.join(cfg["ants_path"], "antsRegistration")
-    call = [f'{exe} -d 3 --interpolation Linear',
-            f'--winsorize-image-intensities [0.005,0.995] --use-histogram-matching 1 ',
-            f'--initial-moving-transform [{fixed_path}, {moving_path},1]',
-            f'--transform Rigid[0.1] --convergence [1000x500x250x0,1e-6,10] --shrink-factors 12x8x4x1 --smoothing-sigmas 5x4x3x1vox',
-            f'--metric MI[{fixed_path}, {moving_path},1,32,Regular,0.25]',
-            #f'--metric CC[{fixed_path}, {moving_path},0.5,4]',
-            #f'--transform Affine[0.15] --convergence [1000x500x250x0,1e-6,10] --shrink-factors 12x8x4x1 --smoothing-sigmas 5x4x3x1vox ',
-            #f'--metric MI[{fixed_path}, {moving_path},1,32,Regular,0.25]', \
-            # f'--metric CC[{fixed_path}, {moving_path},0.5,4]' ,\
-            #f'--transform SyN[0.1,4,0] --convergence [100x70x50x20,1e-7,10] --shrink-factors 8x4x2x1 --smoothing-sigmas 3x2x1x0vox ', \
-            #f'--metric MI[{fixed_path}, {moving_path},1.25,32,Random,0.25]' ,\
-            #f'--metric CC[{fixed_path}, {moving_path},1,4]', \
-            ]
+#     exe = os.path.join(cfg["ants_path"], "antsRegistration")
+#     call = [f'{exe} -d 3 --interpolation Linear',
+#             f'--winsorize-image-intensities [0.005,0.995] --use-histogram-matching 1 ',
+#             f'--initial-moving-transform [{fixed_path}, {moving_path},1]',
+#             f'--transform Rigid[0.1] --convergence [1000x500x250x0,1e-6,10] --shrink-factors 12x8x4x1 --smoothing-sigmas 5x4x3x1vox',
+#             f'--metric MI[{fixed_path}, {moving_path},1,32,Regular,0.25]',
+#             #f'--metric CC[{fixed_path}, {moving_path},0.5,4]',
+#             #f'--transform Affine[0.15] --convergence [1000x500x250x0,1e-6,10] --shrink-factors 12x8x4x1 --smoothing-sigmas 5x4x3x1vox ',
+#             #f'--metric MI[{fixed_path}, {moving_path},1,32,Regular,0.25]', \
+#             # f'--metric CC[{fixed_path}, {moving_path},0.5,4]' ,\
+#             #f'--transform SyN[0.1,4,0] --convergence [100x70x50x20,1e-7,10] --shrink-factors 8x4x2x1 --smoothing-sigmas 3x2x1x0vox ', \
+#             #f'--metric MI[{fixed_path}, {moving_path},1.25,32,Random,0.25]' ,\
+#             #f'--metric CC[{fixed_path}, {moving_path},1,4]', \
+#             ]
         
-    if lesion_mask_moving:
-        call += ['-x', f'[,{lesion_mask_moving}]']
+#     if lesion_mask_moving:
+#         call += ['-x', f'[,{lesion_mask_moving}]']
   
-    call.append(f'-o [{out_transform},{out_im}] ')
+#     call.append(f'-o [{out_transform},{out_im}] ')
   
-    print(' '.join(call))
-    os.system(' '.join(call))
+#     print(' '.join(call))
+#     os.system(' '.join(call))
     
 def antsreg_simple(fixed_path, moving_path, out_transform, cfg, lesion_mask_moving=None):
 

@@ -115,7 +115,7 @@ def eval_mist_model(param_irunning, mist_model_irunning, acq_param_irunning):
 # Build / load sigma distribution
 # ============================================================
 
-def simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files, mask_files, model_list):
+def simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files, mask_files, model_list, adjust_parameter_limits=None):
     uGUIDE_folder = main_folder / "uGUIDE_config"
     uGUIDE_folder.mkdir(parents=True, exist_ok=True)
     
@@ -184,6 +184,9 @@ def simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files
         param_name = mist_model.param_names
         n_param = mist_model.n_params
         limits = mist_model.classic_limits
+        
+        if 'adjust_parameter_limits' in locals() and adjust_parameter_limits is not None:
+            limits= adjust_parameter_limits
     
         print(f"Selected model: {mist_model_name}")
         print(f"Parameter names: {param_name}")
@@ -222,7 +225,10 @@ def simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files
                 limits[:, 1] - limits[:, 0]
             ) + limits[:, 0]
     
-            Dmin, Dmax = 0.1, 3.5
+            #Dmin, Dmax = 0.1, 3.5
+            Di_idx = param_name.index('Di')
+            Dmin, Dmax = limits[Di_idx]
+
             Di_samples = np.zeros(n_voxels)
             De_samples = np.zeros(n_voxels)
             U0_samples = np.zeros(n_voxels)

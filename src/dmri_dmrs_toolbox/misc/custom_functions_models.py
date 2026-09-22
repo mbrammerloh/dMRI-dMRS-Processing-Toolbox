@@ -711,6 +711,8 @@ def run_uGUIDE_preparation(data_path, cfg, cfg_uGUIDE, scan_list):
         uGUIDE_nshells = np.hstack(uGUIDE_nshells).ravel()
         uGUIDE_Delta = np.hstack(uGUIDE_Delta).ravel()
 
+        _, adjust_parameter_limits, _ = get_param_names_model(model,cfg['is_alive'])
+        
         # Run Simulation of data
         env_name = "SwissKnife"
         script_path = files("dmri_dmrs_toolbox.misc.uGUIDE").joinpath("uGUIDE_simulate_data.py")
@@ -730,8 +732,10 @@ nb_directions = np.array(json.loads(sys.argv[5]), dtype=int)
 small_delta   = json.loads(sys.argv[6])
 sigma_files   = json.loads(sys.argv[7])
 mask_files    = json.loads(sys.argv[8])
+lims          = np.array(json.loads(sys.argv[9]), dtype=float)
+model         = json.loads(sys.argv[10])
 
-simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files, mask_files, ['Nexi'])
+simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files, mask_files, [model], lims)
 """
         
         print('Running simulation of data for uGUIDE...')
@@ -746,13 +750,15 @@ simulate_data(main_folder, b, delta, nb_directions, small_delta, sigma_files, ma
                 json.dumps(uGUIDE_small_delta),
                 json.dumps(sigma_files),
                 json.dumps(mask_files),
+                json.dumps(adjust_parameter_limits),
+                json.dumps(model),
             ],
             check=True,
         )
         
-        # run Inference of data
+        # run training of data
         env_name = "uGUIDE"
-        script_path = files("dmri_dmrs_toolbox.misc.uGUIDE").joinpath("uGUIDE_simulate_data.py")
+        script_path = files("dmri_dmrs_toolbox.misc.uGUIDE").joinpath("uGUIDE_training.py")
         
 
         code = r"""
@@ -760,7 +766,7 @@ import sys
 import json
 import numpy as np
 sys.path.append(sys.argv[1])
-from uGUIDE_inference import model_inference
+from uGUIDE_training import model_training
 from pathlib import Path
 
 main_folder   = Path(sys.argv[2])
@@ -770,11 +776,11 @@ hidden_layers = np.array(json.loads(sys.argv[5]), dtype=int)
 nb_simu       = json.loads(sys.argv[6])
 nb_theta      = json.loads(sys.argv[7])
 
-model_inference(main_folder, model, noise, hidden_layers, nb_simu, nb_theta)
+model_training(main_folder, model, noise, hidden_layers, nb_simu, nb_theta)
 
 """
         
-        print('Running uGUIDE inference step...')
+        print('Running uGUIDE training step...')
         subprocess.run(
             [
                 cfg["conda_exe"], "run", "-n", env_name, "python", "-c", code,
@@ -808,6 +814,7 @@ def run_uGUIDE_model(model, inputs, data_path, subj, sess, cfg, cfg_uGUIDE):
     uguide_folder = main_folder / f"{subj}" /  f"ses-{sess:02}" / "dwi"  / f"{model}_uGUIDE"
     dwi_path  = inputs['pwd_dwi']
     mask_path = inputs['mask']
+
 
     code = r"""
 import sys

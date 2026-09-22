@@ -17,7 +17,7 @@ from uGUIDE.estimation import estimate_microstructure
 # Helper functions
 # ============================================================
 
-def postprocess_NEXI_SANDIX(samples, config):
+def postprocess_NEXI_SANDIX(samples, config, adjust_parameter_limits=None):
     """
     Post-process uGUIDE samples:
     - convert U0/U1 into Di/De
@@ -34,9 +34,12 @@ def postprocess_NEXI_SANDIX(samples, config):
     u0 = np.clip(u0, 0, 1)
     u1 = np.clip(u1, 0, 1)
 
-    Di_min = 0.1
-    Di_max = 3.5
-    De_min = 0.1
+    Di_min, Di_max = config["prior_postprocessing"]["Di"]
+    De_min, _ = config["prior_postprocessing"]["De"]
+    
+    # Di_min = 0.1
+    # Di_max = 2 #3.5
+    # De_min = 0.1
 
     Di = np.sqrt((Di_max - Di_min) ** 2 * u0) + Di_min
     De = (Di - Di_min) * u1 + De_min

@@ -107,18 +107,18 @@ def Step3_preproc_STE(cfg):
                     N4_unbias(paths_dwi.replace('dwi.nii.gz', 'b0.nii.gz'), paths_dwi.replace('dwi.nii.gz', 'b0_bc.nii.gz'),cfg)
             
                     # Register dwi --> T2w
-                    antsreg_full(bids_strc_anat.get_path('T2w_bc.nii.gz'),  # fixed
+                    antsreg_simple(bids_strc_anat.get_path('T2w_bc.nii.gz'),  # fixed
                             paths_dwi.replace('dwi.nii.gz', 'b0_bc.nii.gz'),  # moving
                             paths_dwi.replace('dwi.nii.gz', 'dwi2T2w'),cfg)
             
                     # Apply inverse transform to put T2w in dwi space
-                    ants_apply_transforms([bids_strc_anat.get_path('T2w_bc.nii.gz'),
+                    ants_apply_transforms_simple([bids_strc_anat.get_path('T2w_bc.nii.gz'),
                                            bids_strc_anat.get_path('T2w_bc_brain.nii.gz')],  # input 
                                         paths_dwi.replace('dwi.nii.gz', 'b0_bc.nii.gz'),  # moving
                                         [paths_dwi.replace('dwi.nii.gz', 'T2w_in_dwi.nii.gz'),
                                          paths_dwi.replace('dwi.nii.gz', 'T2w_brain_in_dwi.nii.gz')],  # output
-                                        [paths_dwi.replace('dwi.nii.gz', 'dwi2T2w0GenericAffine.mat'), 1],  # transform 1
-                                        paths_dwi.replace('dwi.nii.gz', 'dwi2T2w1InverseWarp.nii.gz'),cfg)  # transform 2
+                                        [paths_dwi.replace('dwi.nii.gz', 'dwi2T2w0GenericAffine.mat'), 1], cfg)  # transform 1
+                                        #paths_dwi.replace('dwi.nii.gz', 'dwi2T2w1InverseWarp.nii.gz'),cfg)  # transform 2
             
                     # QA
                     QA_reg(paths_dwi.replace('dwi.nii.gz', 'T2w_brain_in_dwi.nii.gz'),

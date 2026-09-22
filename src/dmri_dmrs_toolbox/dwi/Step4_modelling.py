@@ -33,7 +33,7 @@ def Step4_modelling(cfg):
         cfg_uGUIDE['model']="Nexi"
         cfg_uGUIDE['noise']="rician"
         cfg_uGUIDE['hidden_layers']=[50, 30]
-        cfg_uGUIDE['nb_simu']=700_000
+        cfg_uGUIDE['nb_simu']=1_000_000 #700_000
         cfg_uGUIDE['nb_theta']=1_000
         run_uGUIDE_preparation(data_path, cfg, cfg_uGUIDE, scan_list)
         
@@ -209,13 +209,22 @@ def Step4_modelling(cfg):
                               folderlevel='derivatives', workingdir=cfg['analysis_foldername'],description='microFA')
                 output_path = bids_STE_out.get_path()
                 
-                    # Just run model if it doesn't exist on the folder yet
+                # Just run model if it doesn't exist on the folder yet
                 if not os.path.exists(output_path) or cfg['redo_modelling']:
                     compute_micro_FA(bids_LTE, bids_STE, mask, output_path)
+                       
+                if os.path.exists(output_path):
+                    create_directory((os.path.join(output_path,'Output_masked')))
+                    # Mask output with brain mask for better visualization
+                    for filename in os.listdir(output_path):
+                        if filename.endswith(".nii.gz"):
+                            multiply_by_mask(os.path.join(output_path, filename), # filename input
+                                             os.path.join(output_path,'Output_masked'), # output folder
+                                                     mask,cfg) # mask
                             
-                # Plot summary plot in dwi space
-                bids_strc_prep.set_param(description='allDelta-allb') # new: done on each Delta processed together ('allDelta')
-                plot_summary_params_model(output_path, 'Micro_FA', cfg, bids_strc_prep.get_path('b0_dn_gc_ec_avg_bc_brain.nii.gz'))
+                    # Plot summary plot in dwi space
+                    bids_strc_prep.set_param(description='allDelta-allb') # new: done on each Delta processed together ('allDelta')
+                    plot_summary_params_model(os.path.join(output_path, 'Output_masked'),'Micro_FA',cfg, bids_strc_prep.get_path('b0_dn_gc_ec_avg_bc_brain.nii.gz'))
        
             ########################## MODEL-WISE OPERATIONS ##########################       
             for model in cfg['model_list']:

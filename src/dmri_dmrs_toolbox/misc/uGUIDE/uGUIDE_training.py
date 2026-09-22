@@ -97,7 +97,7 @@ def filter_di_de_below_3(x, theta_uniform, theta_postproc):
 # ============================================================
 # Main function
 # ============================================================
-def model_inference(main_folder, model="Nexi", noise="rician", hidden_layers=[50, 30], nb_simu=700_000, nb_theta=1_000):
+def model_training(main_folder, model="Nexi", noise="rician", hidden_layers=[50, 30], nb_simu=700_000, nb_theta=1_000, adjust_parameter_limits=None):
         
     if model.lower() == "nexi":
         nf_features = 14
@@ -135,9 +135,9 @@ def model_inference(main_folder, model="Nexi", noise="rician", hidden_layers=[50
     theta_uniform_train = theta_postproc_train.copy()
     theta_uniform_train[:, 1:3] = npz_train["U0_U1_samples"]
     
-    # x_train, theta_uniform_train, theta_postproc_train = filter_di_de_below_3(
-    #     x_train, theta_uniform_train, theta_postproc_train
-    # ) #rita
+    #x_train, theta_uniform_train, theta_postproc_train = filter_di_de_below_3(
+      #  x_train, theta_uniform_train, theta_postproc_train
+    #) #rita
     
     print(f"Theta train shape: {theta_postproc_train.shape}")
     print(f"x train shape: {x_train.shape}")
@@ -193,12 +193,12 @@ def model_inference(main_folder, model="Nexi", noise="rician", hidden_layers=[50
     prior_uniform_params[1:3] = npz_train["U0_U1_names"]
     
     prior_postproc_lim = npz_train["limits"].copy()
-    #prior_postproc_lim[1][1] = 3.0 # rita
-    #prior_postproc_lim[2][1] = 3.0 # rita
+    # prior_postproc_lim[1][1] = 3.0 # rita
+    # prior_postproc_lim[2][1] = 3.0 # rita
     
     prior_uniform_lim = prior_postproc_lim.copy()
-    prior_uniform_lim[1] = [0.0, 1.0]  # U0: allows Di up to 3.5
-    #prior_uniform_lim[1] = [0.0, 9 / (3.5) ** 2]
+    # prior_uniform_lim[1] = [0.0, 9 / (3.5) ** 2]
+    prior_uniform_lim[1] = [0.0, 1.0]  # rita: allows Di up to 3.5
     prior_uniform_lim[2] = [0.0, 1.0]
     
     prior_uniform = {
@@ -290,8 +290,8 @@ def model_inference(main_folder, model="Nexi", noise="rician", hidden_layers=[50
     theta_uniform_test[:, 1:3] = npz_test["U0_U1_samples"]
     
     # x_test, theta_uniform_test, theta_postproc_test = filter_di_de_below_3(
-    #     x_test, theta_uniform_test, theta_postproc_test
-    # )
+     #   x_test, theta_uniform_test, theta_postproc_test
+    #) # rita
     
     print(f"Theta test shape: {theta_postproc_test.shape}")
     print(f"x test shape: {x_test.shape}")
@@ -323,7 +323,7 @@ def model_inference(main_folder, model="Nexi", noise="rician", hidden_layers=[50
     #prior_postproc_lim_test[2][1] = 3.0 # rita
     
     prior_uniform_lim_test = prior_postproc_lim_test.copy()
-    #prior_uniform_lim_test[1] = [0.0, 9 / (3.5) ** 2]
+    #prior_uniform_lim_test[1] = [0.0, 9 / (3.5) ** 2] #rita
     prior_uniform_lim_test[1] = [0.0, 1.0]
     prior_uniform_lim_test[2] = [0.0, 1.0]
     

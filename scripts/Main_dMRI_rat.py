@@ -91,6 +91,7 @@ cfg['redo_all']             = 0   # If you want to redo everything set to 1 (wil
 cfg['redo_bet_anat']        = 0   # If you want to redo the processing from the brain extraction set to 1
 cfg['redo_b0_extract']      = 0   # If you want to redo the processing from the dwi b0 extraction set to 1
 cfg['redo_merge_dwi']       = 0   # If you want to redo the processing from the merging of dwi files from different diffusion times set to 1
+cfg['redo_firstmask']       = 0   # If you want to redo the processing from the initial brain mask on the combined dataset, set this to 1
 cfg['redo_denoise']         = 0   # If you want to redo the processing from the denoising set to 1
 cfg['redo_gibbs']           = 0   # If you want to redo the processing from the gibbs unringing set to 1
 cfg['redo_topup']           = 0   # If you want to redo the processing from the topup correction set to 1

@@ -167,6 +167,7 @@ def Step3_registrations(cfg):
                         if not os.path.exists(bids_strc_reg.get_path('template_in_dwi.nii.gz')):
                         
                             create_directory(bids_strc_reg_dwi.get_path())
+                            
                             # Copy ref file
                             shutil.copyfile(bids_strc_prep.get_path('b0_dn_gc_ec_avg_bc_brain.nii.gz'),bids_strc_reg_dwi.get_path(f'ref_dwi.nii.gz'))
 
@@ -220,7 +221,7 @@ def Step3_registrations(cfg):
                                 
                             else:
          
-                                # Apply inverse transform to put template anat in dwi
+                                # # Apply inverse transform to put template anat in dwi
                                 ants_apply_transforms_simple([bids_strc_reg.get_path(f'template_in_{anat_format}.nii.gz')],  # input 
                                                      bids_strc_prep.get_path('b0_dn_gc_ec_avg_bc_brain.nii.gz'), # moving
                                                      [bids_strc_reg_dwi.get_path('template_in_dwi.nii.gz')], # output
@@ -240,8 +241,8 @@ def Step3_registrations(cfg):
                                                      [bids_strc_reg_dwi.get_path('atlas_in_dwi.nii.gz')], # output
                                                      [bids_strc_prep.get_path(f'dwiafterpreproc2{anat_format}0GenericAffine.mat'), 1],
                                                      cfg, '--interpolation NearestNeighbor -u int') # # transform 1
-                              
                                 
+                      
            ########################## B. REGISTRATION STE TO LTE ##########################
              
            #data_type =f"Delta_{cfg['LTEDelta_for_microFA']}" # Diffusion time of LTE we will compare the STE to
