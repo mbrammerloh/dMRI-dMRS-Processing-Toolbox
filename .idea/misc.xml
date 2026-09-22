@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Black">
-    <option name="sdkName" value="uv (dMRI_dMRS_toolbox)" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="uv (dMRI_dMRS_toolbox)" project-jdk-type="Python SDK" />
-</project>
