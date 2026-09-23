@@ -22,8 +22,8 @@ os.system('cls')
 ########################## SCRIPT CONFIGURATION (EDIT AS APPPROPRIATE) ##########################
 
 #### DATA PATH AND SUBJECTS ####
-subj_list = [f'sub-{i:02d}' for i in list(np.arange(3,29))]    # list of subjects to analyse [8,10,11,12,14,15]]#
-subj_list = [f'sub-{i:02d}' for i in list(np.arange(20,29))]    # list of subjects to analyse [8,10,11,12,14,15]]#
+subj_list = [f'sub-{i:02d}' for i in list(np.arange(3,30))]    # list of subjects to analyse [8,10,11,12,14,15]]#
+subj_list = [f'sub-{i:02d}' for i in list(np.arange(3,30))]    # list of subjects to analyse [8,10,11,12,14,15]]#
 
 cfg                         = {}
 cfg['subj_list']            = subj_list
@@ -36,9 +36,12 @@ cfg['scan_list_name']       = 'ScanList_CTD.xlsx'   # name of the excel file con
 #### DMRS PREPROCESSING CONFIG ####
 cfg['basis_set'] = os.path.join(cfg['common_folder'], 'mrs_basis_sets',
                                 'Basis_Set_dSPECIAL_differentTM')  # path to where the basis set are
-cfg['models'] = ["dti", "stick", "dki", "cylinder", "cylinder_sphere", "sphere_stick"]  # models used for fitting
-cfg['metabolites'] = ['NAA+NAAG', 'Glu', 'Ins', 'GPC+PCho', 'Cr+PCr', 'Tau', 'Gln']  # metabolites for analysis
-cfg['redo_processing'] = 1  # 1 to remove previous file and redo all processing (Step1); 0 to process only missing TMs
+cfg['models'] = ["dti"]#, "stick", "dki", "cylinder", "cylinder_sphere", "sphere_stick"]  # models used for fitting
+cfg['metabolites'] = ['Gln']#'NAA+NAAG', 'Glu', 'Ins', 'GPC+PCho', 'Cr+PCr', 'Tau', 'Gln']  # metabolites for analysis
+cfg['redo_processing'] = 0  # 1 to remove previous file and redo all processing (Step1); 0 to process only missing TMs
+cfg['outlier_detection'] = 1      # 1 = detect & remove b-decay outliers per metabolite before fitting; 0 = off
+cfg['outlier_k_sigma']   = 3.0    # CRLB multiplier for the outlier threshold
+cfg['outlier_rel_tol']   = 0.05   # relative floor for the outlier threshold (fraction of the b0 signal)
 
 #### SOFTWARES ####
 cfg['toolboxes']            = "/home/localadmin/Software/"                              # path to where some toolboxes from matlab are (including MPPCA and tMPPCA)
